@@ -16,6 +16,7 @@
     "src/token_frontend"
   ],
   "dependencies": {
-    "@dfinity/auth-client": "^1.4.0"
+    "@dfinity/auth-client": "^1.4.0",
+    "env": "^0.0.2"
   }
 }
