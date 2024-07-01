@@ -30,10 +30,52 @@ dfx start --background
 # Deploys your canisters to the replica and generates your candid interface
 dfx deploy
 ```
+once you deployed the canisters you should initialize them by calling the transfer function on `main.mo`. Using the following commands,
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
+storing the canister id on a variable.
 
-If you have made changes to your backend canister, you can generate a new candid interface with
+```bash
+CANISTER_PUBLIC_KEY="principal \"$( \dfx canister id token_backend )\""
+```
+
+transferring half a billion tokens to the canister using transfer function on `main.mo`.
+
+```bash
+dfx canister call token_backend transfer "($CANISTER_PUBLIC_KEY, 500_000_000)"
+```
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+If you want to deploy your canister online on Internet Computer:
+
+To deploy the canister on Internet Computer
+```bash
+dfx deploy --network ic
+```
+
+Store the live canister ID to a varaiable
+
+```bash
+LIVE_CANISTER_KEY="principal \"$( \dfx canister --network ic id token_backend )\""
+```
+
+To transfer tokens to live canister:
+
+```bash
+dfx canister --network ic call token_backend transfer "($LIVE_CANISTER_KEY, 500_000_000)"
+```
+
+Get live canister front-end id:
+
+```bash
+dfx canister --network ic id token_frontend
+```
+
+Copy the id and add `.raw.ic0.app` in the end to form a URL. Paste the URL on a search engine to get the live canister on your web browser.
+
+
+If you have made changes to your backend canister, you can generate a new candid interface with 
 
 ```bash
 npm run generate
@@ -46,8 +88,6 @@ If you are making frontend changes, you can start a development server with
 ```bash
 npm start
 ```
-
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
 
 ### Note on frontend environment variables
 
