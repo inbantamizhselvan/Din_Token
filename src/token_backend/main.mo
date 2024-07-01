@@ -4,6 +4,7 @@ import HashMap "mo:base/HashMap";
 import Nat "mo:base/Nat";
 import Debug "mo:base/Debug";
 import Iter "mo:base/Iter";
+import Config "config";
 
 actor Token{
   private stable var transactions: [Transaction] = [];
@@ -12,7 +13,7 @@ actor Token{
     to: Principal;
     amount: Nat;
   };
-  var owner : Principal = Principal.fromText("dmxqt-ikbhf-ki2zj-wmly4-yqnpj-yetey-7ihs6-7a24f-bh3vc-idg25-aae");
+  var owner : Principal = Principal.fromText(Config.MY_PRINCIPAL);
   var totalSupply : Nat = 1000000000;
   var symbol : Text = "Din";
 
