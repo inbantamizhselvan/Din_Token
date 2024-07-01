@@ -23,9 +23,19 @@ dfx canister --help
 
 If you want to test your project locally, you can use the following commands:
 
+First of all replace the `Config.MY_PRINCIPAL` in `main.mo` with your own Principal ID by,
+
+```bash
+# Returns your principal id
+dfx identity get-principal
+```
+
 ```bash
 # Starts the replica, running in the background
 dfx start --background
+
+# Installs all the required node modules
+npm install
 
 # Deploys your canisters to the replica and generates your candid interface
 dfx deploy
