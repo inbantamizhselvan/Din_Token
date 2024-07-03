@@ -4,15 +4,18 @@ import HashMap "mo:base/HashMap";
 import Nat "mo:base/Nat";
 import Debug "mo:base/Debug";
 import Iter "mo:base/Iter";
+import Array "mo:base/Array";
+import List "mo:base/List";
 import Config "config";
 
 actor Token{
-  private stable var transactions: [Transaction] = [];
   private type Transaction = {
-    from: Principal;
-    to: Principal;
-    amount: Nat;
+    receiver: Principal;
+    receivedAmount: Nat;
+    balance : Nat;
   };
+  private var transactionList :List.List<Transaction> = List.nil<Transaction>();
+  private var transactions = HashMap.HashMap<Principal, Transaction>(1, Principal.equal, Principal.hash);
   var owner : Principal = Principal.fromText(Config.MY_PRINCIPAL);
   var totalSupply : Nat = 1000000000;
   var symbol : Text = "Din";
@@ -53,14 +56,25 @@ actor Token{
       let toBalance:Nat = await balanceOf(to);
       let newToBalance:Nat = toBalance + amount;
       balances.put(to, newToBalance);
-      transactions := [{from = msg.caller; to=to; amount = amount}];
+      let newTransactionList : Transaction = {
+        receiver = to;
+        receivedAmount = amount ;
+        balance = fromBalance - amount;
+      };
+      transactions.put(msg.caller, newTransactionList);
+      transactionList := List.push(newTransactionList, transactionList);
       return "success";
     } else {
-    return "Insufficient Funds";
+      return "Insufficient Funds";
   };
 };
 public query func getTransactions() : async [Transaction] {
-    return transactions;
+
+
+        // Convert List.List<Transaction> to array [Transaction]
+        let transactionArray = List.toArray(transactionList);
+        Debug.print(debug_show(transactionArray));
+        return transactionArray;
 };
 system func preupgrade(){
   balanceEntries := Iter.toArray(balances.entries());
