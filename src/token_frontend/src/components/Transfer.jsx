@@ -11,29 +11,26 @@ function Transfer() {
   const [isHidden, setHidden] = useState(true);
   const [transactions, setTransactions] = useState([]);
   const [textColor, setTextColor] = useState();
+  const [loaderHidden, setLoader] = useState(true);
 
   useEffect(() => {
-    initialFetchTransactions();
+    fetchTransactions();
   }, []);
 
-  async function initialFetchTransactions() {
+  async function fetchTransactions() {
     try {
       const transactionList = await token_backend.getTransactions();
+      console.log(transactionList);
       setTransactions(transactionList);
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
   }
 
-  async function fetchTransactions() {
-    try {
-      const transactionList = await token_backend.getTransactions();
-      setTransactions(prevTransactions => [...transactionList, ...prevTransactions]);
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
-    }
-  }
   async function handleClick() {
+    console.log(loaderHidden);
+    setLoader(false);
+    console.log(loaderHidden)
     setHidden(true);
     setDisabled(true);
     const recipient=Principal.fromText(recipientID);
@@ -56,6 +53,8 @@ function Transfer() {
       setHidden(false);
       setDisabled(false);
     }
+    setLoader(true);
+    console.log(loaderHidden)
     console.log(transactions);
   }
   return (
@@ -88,10 +87,16 @@ function Transfer() {
           </ul>
         </fieldset>
         <p className="trade-buttons">
-          <button id="btn-transfer" onClick={handleClick} disabled={isDisabled}>
-            Transfer
-          </button>
+        <button id="btn-transfer" onClick={handleClick} disabled={isDisabled}>
+          Transfer
+        </button>
         </p>
+        <div hidden={loaderHidden} className="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        </div>
         <p hidden={isHidden} style={{color:textColor}}><b>{feedback}</b></p>
         <Transactions transactionAttr={transactions}/>
       </div>
